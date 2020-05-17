@@ -57,6 +57,18 @@ impl ops::Mul<Geometry> for f64 {
     }
 }
 
+impl ops::Div<f64> for Geometry {
+    type Output = Geometry;
+
+    fn div(self,rhs:f64) -> Geometry {
+        let rpl = 1.0/rhs;
+        Geometry(self.0 * rpl,
+                 self.1 * rpl,
+                 self.2 * rpl,
+                 self.3 * rpl)
+    }
+}
+
 impl PartialEq for Geometry {
     fn eq(&self, other: &Self) -> bool {
         self.0 == other.0 &&
@@ -216,6 +228,11 @@ mod tests {
         assert_eq!(result,Geometry(0.5,-1.0,1.5,-2.0));
     }
 
-
+    #[test]
+    fn test_cdiv() {
+        let a = Geometry(1.0,-2.0,3.0,-4.0);
+        let result = a/2.0;
+        assert_eq!(result,Geometry(0.5,-1.0,1.5,-2.0));
+    }
 }
 

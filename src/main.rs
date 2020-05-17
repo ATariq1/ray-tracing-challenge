@@ -6,8 +6,8 @@ const OUTER:u128 = 100;
 
 use std::time::{Instant};
 
-fn main() {
-
+#[allow(dead_code)]
+fn type_benchmark() {
     let mut total = 0;
 
     for _t in 0..OUTER { 
@@ -37,4 +37,11 @@ fn main() {
     }
 
     println!("STRUCT AVG: {}",total/OUTER);
+
+}
+
+fn main() {
+
+    type_benchmark();
+
 }

@@ -46,7 +46,7 @@ pub fn is_vector (p:Geometry) -> bool {
     p.3 == 0.0
 }
 
-#[cfg(test)]
+/*
 mod tests {
     use super::*;
 
@@ -176,4 +176,5 @@ mod tests {
         assert_eq!(result,(0.5,-1.0,1.5,-2.0));
     }
 }
+*/
 
