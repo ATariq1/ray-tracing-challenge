@@ -21,6 +21,15 @@ pub fn neg(t:Geometry) -> Geometry {
      -t.3)
 }
 
+pub fn cmul(a:f64,g:Geometry) -> Geometry {
+    (a*g.0, a*g.1, a*g.2, a*g.3)
+}
+
+pub fn cdiv(d:f64,g:Geometry) -> Geometry {
+    let a = 1.0/d;
+    (a*g.0, a*g.1, a*g.2, a*g.3)
+}
+
 pub fn point (x:f64, y:f64, z:f64) -> Geometry {
     (x,y,z,1.0)
 }
@@ -149,6 +158,22 @@ mod tests {
         let result = neg(a);
 
         assert_eq!(result,(-1.0,2.0,3.0,4.0));
+    }
+
+    #[test]
+    fn test_cmul1() {
+        let a = (1.0,-2.0,3.0,-4.0);
+        let result = cmul(3.5,a);
+
+        assert_eq!(result,(3.5,-7.0,10.5,-14.0));
+    }
+
+    #[test]
+    fn test_cmul2() {
+        let a = (1.0,-2.0,3.0,-4.0);
+        let result = cmul(0.5,a);
+
+        assert_eq!(result,(0.5,-1.0,1.5,-2.0));
     }
 }
 
