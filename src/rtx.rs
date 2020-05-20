@@ -33,8 +33,25 @@ impl Geo {
                 self.y*self.y +
                 self.z*self.z +
                 self.w*self.w;
-
         s.sqrt()
+    }
+
+    pub fn norm(&self) -> Geo {
+        let mag = self.len();
+        return *self/mag;
+    }
+    
+    pub fn dot(&self, other:Self) -> f64 {
+        self.x*other.x +
+        self.y*other.y +
+        self.z*other.z +
+        self.w*other.w 
+    }
+
+    pub fn cross(&self, other:Self) -> f64 {
+        vector( self.y*other.z - self.z*other.y,
+                self.z*other.x - self.x*other.z,
+                self.x*other.y - self.y*other.x)
     }
 }
 
@@ -271,5 +288,40 @@ mod tests {
         assert_eq!(v5.len(),14.0f64.sqrt());
     }
 
+    #[test]
+    fn test_normalization() {
+        let v1 = Geo::vector(4.0,0.0,0.0);
+        assert_eq!(v1.norm(),Geo::vector(1.0,0.0,0.0));
+
+        let v2 = Geo::vector(1.0,2.0,3.0);
+        let mag = 14.0f64.sqrt();
+
+        assert_eq!(v2.norm(),Geo::vector(1.0/mag, 2.0/mag, 3.0/mag));
+        assert_eq!(v2.norm().len(),1.0)
+
+    }
+
+    #[test]
+    fn test_dot() {
+        let v1 = Geo::vector(1.0,2.0,3.0);
+        let v2 = Geo::vector(2.0,3.0,4.0);
+
+        let result1 = v1.dot(v2);
+        let result2 = v2.dot(v1);
+
+        assert_eq!(result1,result2);
+        assert_eq!(result1,20.0);
+    }
+
+    #[test]
+    fn test_cross() {
+        let v1 = Geo::vector(1.0,2.0,3.0);
+        let v2 = Geo::vector(2.0,3.0,4.0);
+
+        let result1 = v1.cross(v2);
+        let result2 = v2.cross(v1);
+
+        assert_eq!(result1,result2);
+    }
 }
 
