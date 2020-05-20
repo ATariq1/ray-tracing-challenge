@@ -1,5 +1,6 @@
 mod rt;
 mod rtx;
+mod projectile;
 
 const ITER:i32  = 25_000;
 const OUTER:u128 = 1000;
@@ -45,8 +46,16 @@ fn type_benchmark() {
 
 }
 
+
+
 fn main() {
 
-    type_benchmark();
+    let p = projectile::Projectile  { position: rtx::Geo::point( 0.0, 1.0, 0.0),
+                                      velocity: rtx::Geo::vector(10.0, 10.0, 0.0) };
+
+    let e = projectile::Environment { gravity:  rtx::Geo::vector(0.0,-0.1, 0.0),
+                                      wind:     rtx::Geo::vector(-0.01,0.0,0.0) };
+
+    projectile::simulate(p,e);
 
 }

@@ -4,7 +4,12 @@ const VECTOR_W:f64 = 0.0;
 const  POINT_W:f64 = 1.0;
 
 #[derive(Debug,Copy,Clone)]
-pub struct Geo {x:f64,y:f64,z:f64,w:f64}
+pub struct Geo {
+    pub x:f64,
+    pub y:f64,
+    pub z:f64,
+    pub w:f64
+}
 
 impl Geo {
 
@@ -48,10 +53,10 @@ impl Geo {
         self.w*other.w 
     }
 
-    pub fn cross(&self, other:Self) -> f64 {
-        vector( self.y*other.z - self.z*other.y,
-                self.z*other.x - self.x*other.z,
-                self.x*other.y - self.y*other.x)
+    pub fn cross(&self, other:Self) -> Geo {
+       Geo::vector( self.y*other.z - self.z*other.y,
+                    self.z*other.x - self.x*other.z,
+                    self.x*other.y - self.y*other.x)
     }
 }
 
@@ -321,7 +326,9 @@ mod tests {
         let result1 = v1.cross(v2);
         let result2 = v2.cross(v1);
 
-        assert_eq!(result1,result2);
+        assert_eq!(result1,-result2);
+        assert_eq!(result1,Geo::vector(-1.0,2.0,-1.0));
+        assert_eq!(result2,Geo::vector(1.0,-2.0,1.0));
     }
 }
 
