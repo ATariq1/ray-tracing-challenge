@@ -1,5 +1,6 @@
 mod rt;
 mod rtx;
+mod color;
 mod projectile;
 
 const ITER:i32  = 25_000;
@@ -51,7 +52,7 @@ fn type_benchmark() {
 fn main() {
 
     let p = projectile::Projectile  { position: rtx::Geo::point( 0.0, 1.0, 0.0),
-                                      velocity: rtx::Geo::vector(10.0, 10.0, 0.0) };
+                                      velocity: rtx::Geo::vector(0.0, 10.0, 0.0) };
 
     let e = projectile::Environment { gravity:  rtx::Geo::vector(0.0,-0.1, 0.0),
                                       wind:     rtx::Geo::vector(-0.01,0.0,0.0) };
