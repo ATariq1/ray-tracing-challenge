@@ -12,8 +12,12 @@ impl Color {
     pub fn new(red:f64, green:f64, blue:f64) -> Color {
         Color { red:red, green:green, blue:blue }
     }
-
 }
+
+impl ops::Add for Color {
+    type Output = Color;
+
+    fn add(self, rhs:Color) -> Color {
 
 
 #[cfg(test)]
