@@ -2,6 +2,7 @@ use std::ops;
 
 const VECTOR_W:f64 = 0.0;
 const  POINT_W:f64 = 1.0;
+const  EPSILON:f64 = 0.0000001;
 
 #[derive(Debug,Copy,Clone)]
 pub struct Geo {
@@ -126,10 +127,10 @@ impl ops::Div<f64> for Geo {
 
 impl PartialEq for Geo {
     fn eq(&self, other: &Self) -> bool {
-        self.x == other.x &&
-        self.y == other.y &&
-        self.z == other.z &&
-        self.w == other.w 
+        (self.x - other.x).abs() < EPSILON &&
+        (self.y - other.y).abs() < EPSILON &&
+        (self.z - other.z).abs() < EPSILON &&
+        (self.w - other.w).abs() < EPSILON 
     }
 }
 

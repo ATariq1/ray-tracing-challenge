@@ -1,7 +1,9 @@
 mod rt;
 mod rtx;
 mod color;
+mod canvas;
 mod projectile;
+
 
 const ITER:i32  = 25_000;
 const OUTER:u128 = 1000;
