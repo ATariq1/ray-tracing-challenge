@@ -1,33 +1,21 @@
-extern crate sdl2;
 
-use sdl2::pixels::Color;
+use crate::color;
 
-#[cfg(test)]
-mod tests {
-    use super::*;
+struct Canvas {
+    x: i32,
+    y: i32,
+    canvas: Vec<color::Color>;
+}
 
-    #[test]
-    fn test_black_pixels () {
+impl Canvas {
+    pub fn new(x:i32, y:i32) -> Canvas {
 
+        
+    }
 
-    let sdl_context = sdl2::init().unwrap();
-    let video_subsystem = sdl_context.video().unwrap();
+    pub fn get_pixel(x:i32,y:i32) -> color::Color {
 
-    let window = video_subsystem.window("demo", 400, 400)
-        .position_centered()
-        .opengl()
-        .build()
-        .unwrap();
-
-    let mut renderer = window.renderer().build().unwrap();
-
-    renderer.set_draw_color(Color::RGB(255, 255, 255));
-    renderer.clear();
-    renderer.present();
-
-        assert_eq!(1,1-1+1);
 
     }
 }
-
 
