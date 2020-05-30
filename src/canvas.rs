@@ -32,6 +32,12 @@ impl Canvas {
 
         self.grid[self.width*y + x] = c;
     }
+
+    pub fn to_ppm(&self) -> String {
+
+        let header = format!("P3\n{} {}\n255",self.width,self.height);
+        header
+    }
 }
 
 
@@ -67,5 +73,13 @@ mod tests {
 
     }
 
+    #[test]
+    fn test_ppm_conversion() {
+
+        let c = Canvas::new(3,3);
+
+        assert_eq!(c.to_ppm(),"P3\n3 3\n255");
+
+    }
 
 } 
