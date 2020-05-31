@@ -1,4 +1,7 @@
-
+use std::error::Error;
+use std::fs::File;
+use std::io::prelude::*;
+use std::path::Path;
 use crate::color;
 
 struct Canvas {
@@ -33,10 +36,19 @@ impl Canvas {
         self.grid[self.width*y + x] = c;
     }
 
-    pub fn to_ppm(&self) -> String {
+    pub fn to_ppm(&self, path:&str) {
+
+	let path = Path::new(path);
+
+	let mut file = match File::create(&path) {
+        	Err(why) => panic!("couldn't create: {}", why.description()),
+        	Ok(file) => file,
+    	};
 
         let header = format!("P3\n{} {}\n255",self.width,self.height);
-        header
+    	
+        file.write_all(header.as_bytes());
+
     }
 }
 
@@ -78,8 +90,7 @@ mod tests {
 
         let c = Canvas::new(3,3);
 
-        assert_eq!(c.to_ppm(),"P3\n3 3\n255");
+        c.to_ppm("ppm/test1.ppm");
 
     }
-
 } 
