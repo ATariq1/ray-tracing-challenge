@@ -14,6 +14,15 @@ impl Color {
     pub fn new(red:f64, green:f64, blue:f64) -> Color {
         Color { red:red, green:green, blue:blue }
     }
+
+    pub fn to_ppm(&self, scale_factor:i32) -> String {
+
+        let sf = scale_factor as f64;
+
+        format!("{} {} {} ", (self.red   *sf) as i32,
+                             (self.green *sf) as i32,
+                             (self.blue  *sf) as i32)
+    }
 }
 
 impl ops::Add for Color {
@@ -129,5 +138,19 @@ mod tests {
         let result = c1 * c2;
 
         assert_eq!(result,Color::new(0.9,0.2,0.04));
+    }
+
+    #[test]
+    fn test_ppm () {
+
+        let c1 = Color::new(1.0,1.0,1.0);
+        let r1 = c1.to_ppm(255);
+
+        assert_eq!(r1,"255 255 255 ");
+
+        let c3 = Color::new(1.0,0.8,0.6);
+        let r3 = c3.to_ppm(255);
+
+        assert_eq!(r3,"255 204 103 ");
     }
 }

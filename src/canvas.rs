@@ -1,8 +1,10 @@
-use std::error::Error;
 use std::fs::File;
 use std::io::prelude::*;
 use std::path::Path;
 use crate::color;
+use std::io::LineWriter;
+
+const COLOR_MAX:i32 = 255;
 
 struct Canvas {
     width : usize,
@@ -40,14 +42,22 @@ impl Canvas {
 
 	let path = Path::new(path);
 
-	let mut file = match File::create(&path) {
-        	Err(why) => panic!("couldn't create: {}", why.description()),
-        	Ok(file) => file,
-    	};
+	let mut file = File::create(&path).expect("failed to create");
+        let mut file = LineWriter::new(file);
 
-        let header = format!("P3\n{} {}\n255",self.width,self.height);
-    	
-        file.write_all(header.as_bytes());
+        file.write_all(b"P3\n");
+        file.write_all(format!("{} {}\n",self.width,self.height).as_bytes());
+        file.write_all(format!("{}\n",COLOR_MAX).as_bytes());
+
+        let mut count = 0;
+        
+        for color in self.grid.iter() {
+            file.write_all(color.to_ppm(COLOR_MAX).as_bytes());
+            count += 1;
+            if count %5 ==0 {
+                file.flush();
+            }
+        }
 
     }
 }
@@ -91,6 +101,7 @@ mod tests {
         let c = Canvas::new(3,3);
 
         c.to_ppm("ppm/test1.ppm");
+        
 
     }
 } 
