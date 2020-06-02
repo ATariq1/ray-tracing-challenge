@@ -151,6 +151,6 @@ mod tests {
         let c3 = Color::new(1.0,0.8,0.6);
         let r3 = c3.to_ppm(255);
 
-        assert_eq!(r3,"255 204 103 ");
+        assert_eq!(r3,"255 204 153 ");
     }
 }

@@ -55,9 +55,11 @@ impl Canvas {
             file.write_all(color.to_ppm(COLOR_MAX).as_bytes());
             count += 1;
             if count %5 ==0 {
-                file.flush();
+                file.write_all("\n".as_bytes());
             }
         }
+
+        file.flush();
 
     }
 }
@@ -102,6 +104,21 @@ mod tests {
 
         c.to_ppm("ppm/test1.ppm");
         
+
+    }
+
+    #[test]
+    fn test_fill_ppm() {
+
+        let mut c = Canvas::new(10,2);
+        
+        for x in 0..10 {
+            for y in 0..2 {
+                c.write_pixel(x,y,color::Color::new(1.0,0.8,0.6));
+            }
+        }
+
+        c.to_ppm("ppm/fill.ppm");
 
     }
 } 
