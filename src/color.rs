@@ -15,13 +15,28 @@ impl Color {
         Color { red:red, green:green, blue:blue }
     }
 
-    pub fn to_ppm(&self, scale_factor:i32) -> String {
+    fn scale_color(color_value:f64, scale_factor:i32) -> i32 {
+        
+        if color_value >= 1.0 {
+            
+            return scale_factor
 
-        let sf = scale_factor as f64;
+        } else if color_value <= 0.0 {
 
-        format!("{} {} {} ", (self.red   *sf) as i32,
-                             (self.green *sf) as i32,
-                             (self.blue  *sf) as i32)
+            return 0;
+
+        } else {
+
+            let sf = scale_factor as f64;
+            return (color_value * sf) as i32;
+        }
+    }
+
+    pub fn to_ppm(&self, sf:i32) -> String {
+
+        format!("{} {} {} " ,Color::scale_color(self.red,   sf),
+                             Color::scale_color(self.green, sf),
+                             Color::scale_color(self.blue,  sf))
     }
 }
 

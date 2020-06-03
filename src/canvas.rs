@@ -1,3 +1,4 @@
+use std::fs;
 use std::fs::File;
 use std::io::prelude::*;
 use std::path::Path;
@@ -6,7 +7,7 @@ use std::io::LineWriter;
 
 const COLOR_MAX:i32 = 255;
 
-struct Canvas {
+pub struct Canvas {
     width : usize,
     height: usize,
     grid: Vec<color::Color>
@@ -35,7 +36,11 @@ impl Canvas {
 
     pub fn write_pixel(&mut self,x:usize,y:usize,c:color::Color) {
 
-        self.grid[self.width*y + x] = c;
+        if x >= 0 && x < self.width &&
+           y >= 0 && y < self.height {
+               
+            self.grid[self.width*y + x] = c;
+        }
     }
 
     pub fn to_ppm(&self, path:&str) {
@@ -59,7 +64,7 @@ impl Canvas {
             }
         }
 
-        file.flush();
+        file.write_all("\n".as_bytes());
 
     }
 }
@@ -104,7 +109,41 @@ mod tests {
 
         c.to_ppm("ppm/test1.ppm");
         
+        let contents = fs::read_to_string("ppm/test1.ppm").expect("could not read");
 
+        assert_eq!(contents.trim(),
+        "P3\n\
+        3 3\n\
+        255\n\
+        0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \n\
+        0 0 0 0 0 0 0 0 0 0 0 0");
+
+    }
+
+    #[test]
+    fn test_color_bounds() {
+    
+        let mut c = Canvas::new(5,3);
+        
+        let c1 = color::Color::new( 1.5, 0.0, 0.0);
+        let c2 = color::Color::new( 0.0, 0.5, 0.0);
+        let c3 = color::Color::new(-0.5, 0.0, 1.0);
+
+        c.write_pixel(0,0,c1);
+        c.write_pixel(2,1,c2);
+        c.write_pixel(4,2,c3);
+
+        c.to_ppm("ppm/bounds.ppm");
+
+        let contents = fs::read_to_string("ppm/bounds.ppm").expect("could not read");
+        
+        assert_eq!(contents.trim(), 
+        "P3\n\
+         5 3\n\
+         255\n\
+         255 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \n\
+         0 0 0 0 0 0 0 127 0 0 0 0 0 0 0 \n\
+         0 0 0 0 0 0 0 0 0 0 0 0 0 0 255");
     }
 
     #[test]
@@ -120,5 +159,16 @@ mod tests {
 
         c.to_ppm("ppm/fill.ppm");
 
+        let contents = fs::read_to_string("ppm/fill.ppm").expect("could not read");
+
+        assert_eq!(contents.trim(), 
+        "P3\n\
+        10 2\n\
+        255\n\
+        255 204 153 255 204 153 255 204 153 255 204 153 255 204 153 \n\
+        255 204 153 255 204 153 255 204 153 255 204 153 255 204 153 \n\
+        255 204 153 255 204 153 255 204 153 255 204 153 255 204 153 \n\
+        255 204 153 255 204 153 255 204 153 255 204 153 255 204 153")
+    
     }
 } 
