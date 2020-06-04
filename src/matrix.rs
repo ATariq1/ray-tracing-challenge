@@ -1,3 +1,4 @@
+use std::ops;
 
 pub struct Matrix {
     dim : usize,
@@ -31,6 +32,7 @@ impl Matrix {
 }
 
 
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -51,4 +53,30 @@ mod tests {
         assert_eq!(m.get(3,0),13.5);
         assert_eq!(m.get(3,2),15.5);
     }
+
+    #[test]
+    fn test_3x3_matrix () {
+
+        let m = Matrix::with_vec(vec![-3.0, 5.0, 0.0,
+                                       1.0,-2.0,-7.0,
+                                       0.0, 1.0, 1.0]);
+
+        assert_eq!(m.get(0,0),-3.0);
+        assert_eq!(m.get(1,1),-2.0);
+        assert_eq!(m.get(2,2), 1.0);
+    }
+
+    #[test]
+    fn test_2x2_matrix () {
+
+        let m = Matrix::with_vec(vec![-3.0, 5.0,
+                                       1.0,-2.0]);
+
+        assert_eq!(m.get(0,0),-3.0);
+        assert_eq!(m.get(0,1), 5.0);
+        assert_eq!(m.get(1,0), 1.0);
+        assert_eq!(m.get(1,1),-2.0);
+    }
+
+
 }
