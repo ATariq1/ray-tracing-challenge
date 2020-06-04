@@ -1,17 +1,17 @@
-use crate::rtx;
+use crate::geo;
 use crate::canvas;
 use crate::color;
 
 #[derive(Debug,Copy,Clone)]
 pub struct Environment {
-     pub gravity: rtx::Geo,
-     pub wind   : rtx::Geo
+     pub gravity: geo::Geo,
+     pub wind   : geo::Geo
 }
 
 #[derive(Debug,Copy,Clone)]
 pub struct Projectile {
-    pub position : rtx::Geo,
-    pub velocity : rtx::Geo 
+    pub position : geo::Geo,
+    pub velocity : geo::Geo 
 }
 
 pub fn tick(env:Environment, proj:Projectile) -> Projectile {

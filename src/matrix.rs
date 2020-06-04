@@ -31,6 +31,18 @@ impl Matrix {
     }
 }
 
+impl PartialEq for Matrix {
+    fn eq(&self, other: &Self) -> bool {
+    
+        return (self.dim == other.dim && self.matrix == other.matrix);
+    
+    }
+}
+
+
+
+impl Eq for Matrix {}
+
 
 
 #[cfg(test)]
@@ -78,5 +90,20 @@ mod tests {
         assert_eq!(m.get(1,1),-2.0);
     }
 
+    #[test]
+    fn test_matrix_equality () {
 
+        let A = vec![1.0,2.0,3.0,4.0,
+                     5.0,6.0,7.0,8.0,
+                     9.0,8.0,7.0,6.0,
+                     5.0,4.0,3.0,2.0];
+
+        let B = vec![1.0,2.0,3.0,4.0,
+                     5.0,6.0,7.0,8.0,
+                     9.0,8.0,7.0,6.0,
+                     5.0,4.0,3.0,2.0];
+
+        assert_eq!(A,B);
+        
+    }
 }
