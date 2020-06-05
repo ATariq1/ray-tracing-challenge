@@ -15,7 +15,7 @@ fn main() {
     let e = projectile::Environment { gravity:  geo::Geo::vector(0.0,-0.1, 0.0),
                                       wind:     geo::Geo::vector(-0.01,0.0,0.0) };
 
-    let mut c = canvas::Canvas::new(900,550);
+    let c = canvas::Canvas::new(900,550);
 
     projectile::simulate(p,e,c);
 

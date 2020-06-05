@@ -36,8 +36,8 @@ impl Canvas {
 
     pub fn write_pixel(&mut self,x:usize,y:usize,c:color::Color) {
 
-        if x >= 0 && x < self.width &&
-           y >= 0 && y < self.height {
+        if x < self.width &&
+           y < self.height {
                
             self.grid[self.width*y + x] = c;
         }
@@ -47,24 +47,37 @@ impl Canvas {
 
 	let path = Path::new(path);
 
-	let mut file = File::create(&path).expect("failed to create");
+	let file = File::create(&path).expect("failed to create");
+
         let mut file = LineWriter::new(file);
 
-        file.write_all(b"P3\n");
-        file.write_all(format!("{} {}\n",self.width,self.height).as_bytes());
-        file.write_all(format!("{}\n",COLOR_MAX).as_bytes());
+        file.write_all(b"P3\n")
+            .expect("failed to write");
+        
+        file.write_all(format!("{} {}\n",self.width,self.height).as_bytes())
+            .expect("failed to write");
+        
+        file.write_all(format!("{}\n",COLOR_MAX).as_bytes())
+            .expect("failed to write");
 
         let mut count = 0;
         
         for color in self.grid.iter() {
-            file.write_all(color.to_ppm(COLOR_MAX).as_bytes());
+
+            file.write_all(color.to_ppm(COLOR_MAX).as_bytes())
+                .expect("failed to write");
+
             count += 1;
-            if count %5 ==0 {
-                file.write_all("\n".as_bytes());
+
+            if count%5 == 0 {
+
+                file.write_all("\n".as_bytes())
+                    .expect("failed to write");
             }
         }
 
-        file.write_all("\n".as_bytes());
+        file.write_all("\n".as_bytes())
+            .expect("failed to write");
 
     }
 }

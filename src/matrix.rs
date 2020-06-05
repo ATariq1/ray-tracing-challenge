@@ -1,9 +1,11 @@
 use std::ops;
+use std::fmt;
 
 pub struct Matrix {
     dim : usize,
     matrix: Vec<f64>
 }
+
 
 impl Matrix {
 
@@ -44,8 +46,8 @@ impl ops::Mul for Matrix {
 
         let mut ret = Matrix::with_dim(4);
 
-        for row in 0..3 {
-            for col in 0..3 {
+        for row in 0..4 {
+            for col in 0..4 {
                     
                 let prod = self.get(row,0) * rhs.get(0,col) +
                            self.get(row,1) * rhs.get(1,col) +
@@ -57,6 +59,15 @@ impl ops::Mul for Matrix {
 	}
 
         return ret;
+    }
+}
+
+impl fmt::Debug for Matrix {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.debug_struct("Matrix")
+         .field("dim", &self.dim)
+         .field("matrix", &self.matrix.iter().fold(String::new(), |acc, &arg| acc + " " + &arg.to_string()))
+         .finish()
     }
 }
 
@@ -120,17 +131,46 @@ mod tests {
     #[test]
     fn test_matrix_equality () {
 
-        let a = vec![1.0,2.0,3.0,4.0,
-                     5.0,6.0,7.0,8.0,
-                     9.0,8.0,7.0,6.0,
-                     5.0,4.0,3.0,2.0];
+        let a = Matrix::with_vec(vec![1.0,2.0,3.0,4.0,
+                                      5.0,6.0,7.0,8.0,
+                                      9.0,8.0,7.0,6.0,
+                                      5.0,4.0,3.0,2.0]);
 
-        let b = vec![1.0,2.0,3.0,4.0,
+        let b = Matrix::with_vec(
+                vec![1.0,2.0,3.0,4.0,
                      5.0,6.0,7.0,8.0,
                      9.0,8.0,7.0,6.0,
-                     5.0,4.0,3.0,2.0];
+                     5.0,4.0,3.0,2.0]);
 
         assert_eq!(a,b);
         
     }
+
+    #[test]
+    fn test_matrix_multiply () {
+
+        let a = Matrix::with_vec(
+                vec![1.0,2.0,3.0,4.0,
+                     5.0,6.0,7.0,8.0,
+                     9.0,8.0,7.0,6.0,
+                     5.0,4.0,3.0,2.0]);
+
+        let b = Matrix::with_vec(
+                vec![-2.0, 1.0, 2.0, 3.0,
+                      3.0, 2.0, 1.0,-1.0,
+                      4.0, 3.0, 6.0, 5.0,
+                      1.0, 2.0, 7.0, 8.0]);
+
+        let result = a*b;
+
+        let exp = Matrix::with_vec(
+                  vec![20.0, 22.0, 50.0, 48.0,
+                       44.0, 54.0,114.0,108.0,
+                       40.0, 58.0,110.0,102.0,
+                       16.0, 26.0, 46.0, 42.0]);
+
+        assert_eq!(result,exp);
+        
+    }
+
 }
