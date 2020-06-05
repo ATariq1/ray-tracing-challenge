@@ -29,17 +29,44 @@ impl Matrix {
         
         self.matrix[row*self.dim + col]
     }
+
+    pub fn set(&mut self,row:usize, col:usize, val:f64) {
+
+        self.matrix[row*self.dim + col] = val;
+
+    }
+}
+                      
+impl ops::Mul for Matrix {
+    type Output = Matrix;
+
+    fn mul(self,rhs:Matrix) -> Matrix {
+
+        let mut ret = Matrix::with_dim(4);
+
+        for row in 0..3 {
+            for col in 0..3 {
+                    
+                let prod = self.get(row,0) * rhs.get(0,col) +
+                           self.get(row,1) * rhs.get(1,col) +
+                           self.get(row,2) * rhs.get(2,col) + 
+                           self.get(row,3) * rhs.get(3,col);
+
+       		ret.set(row,col,prod);
+	     }
+	}
+
+        return ret;
+    }
 }
 
 impl PartialEq for Matrix {
     fn eq(&self, other: &Self) -> bool {
     
-        return (self.dim == other.dim && self.matrix == other.matrix);
+        return self.dim == other.dim && self.matrix == other.matrix;
     
     }
 }
-
-
 
 impl Eq for Matrix {}
 
@@ -93,17 +120,17 @@ mod tests {
     #[test]
     fn test_matrix_equality () {
 
-        let A = vec![1.0,2.0,3.0,4.0,
+        let a = vec![1.0,2.0,3.0,4.0,
                      5.0,6.0,7.0,8.0,
                      9.0,8.0,7.0,6.0,
                      5.0,4.0,3.0,2.0];
 
-        let B = vec![1.0,2.0,3.0,4.0,
+        let b = vec![1.0,2.0,3.0,4.0,
                      5.0,6.0,7.0,8.0,
                      9.0,8.0,7.0,6.0,
                      5.0,4.0,3.0,2.0];
 
-        assert_eq!(A,B);
+        assert_eq!(a,b);
         
     }
 }
