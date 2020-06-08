@@ -1,6 +1,9 @@
 use std::ops;
 use std::fmt;
+use crate::geo;
 
+
+#[derive(Clone)]
 pub struct Matrix {
     dim : usize,
     matrix: Vec<f64>
@@ -25,6 +28,18 @@ impl Matrix {
         };
 
         Matrix {dim, matrix}
+    }
+
+    pub fn identity() -> Matrix {
+
+        let dim = 4usize;
+        let matrix = vec![1.0, 0.0, 0.0, 0.0,
+                         0.0, 1.0, 0.0, 0.0,
+                         0.0, 0.0, 1.0, 0.0,
+                         0.0, 0.0, 0.0, 1.0];
+ 
+        Matrix { dim, matrix}
+
     }
 
     pub fn get( &self,row:usize, col:usize) -> f64 {
@@ -62,6 +77,22 @@ impl ops::Mul for Matrix {
     }
 }
 
+impl ops::Mul<geo::Geo> for Matrix {
+    type Output = geo::Geo;
+
+    fn mul(self,rhs:geo::Geo) -> geo::Geo {
+
+        let mut ret = geo::Geo::new(0.0,0.0,0.0,0.0);
+
+        ret.x = self.get(0,0)*rhs.x + self.get(0,1)*rhs.y + self.get(0,2)*rhs.z  + self.get(0,3)*rhs.w;
+        ret.y = self.get(1,0)*rhs.x + self.get(1,1)*rhs.y + self.get(1,2)*rhs.z  + self.get(1,3)*rhs.w;
+        ret.z = self.get(2,0)*rhs.x + self.get(2,1)*rhs.y + self.get(2,2)*rhs.z  + self.get(2,3)*rhs.w;
+        ret.w = self.get(3,0)*rhs.x + self.get(3,1)*rhs.y + self.get(3,2)*rhs.z  + self.get(3,3)*rhs.w;
+        
+        ret
+    }
+}
+
 impl fmt::Debug for Matrix {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_struct("Matrix")
@@ -80,7 +111,6 @@ impl PartialEq for Matrix {
 }
 
 impl Eq for Matrix {}
-
 
 
 #[cfg(test)]
@@ -173,4 +203,36 @@ mod tests {
         
     }
 
+    #[test]
+    fn test_matrix_vector_multiply () {
+
+        let a = Matrix::with_vec(
+                vec![1.0, 2.0, 3.0, 4.0,
+                     2.0, 4.0, 4.0, 2.0,
+                     8.0, 6.0, 4.0, 1.0,
+                     0.0, 0.0, 0.0, 1.0]);
+
+        let v = geo::Geo::new(1.0,2.0,3.0,1.0);
+
+        assert_eq!(a*v, geo::Geo::new(18.0,24.0,33.0,1.0));
+
+    }
+
+
+    #[test]
+    fn test_matrix_identity_multiply () {
+
+        let a = Matrix::with_vec(
+                vec![0.0, 1.0, 2.0, 4.0,
+                     1.0, 2.0, 4.0, 8.0,
+                     2.0, 4.0, 8.0, 16.0,
+                     4.0, 8.0, 16.0, 32.0]);
+
+        let i = Matrix::identity();
+
+        let result = a.clone()*i;
+
+        assert_eq!(result, a);
+
+    }
 }

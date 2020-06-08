@@ -18,6 +18,12 @@ impl Geo {
         Geo {x:x, y:y, z:z, w:w}
     }
 
+    pub fn with_vec(tup: Vec<f64>) -> Geo {
+
+        Geo {x:tup[0], y:tup[1], z:tup[2], w:tup[3]}
+    }
+
+
     pub fn point (x:f64, y:f64, z:f64) -> Geo {
         Geo {x:x, y:y, z:z, w:POINT_W}
     }                
