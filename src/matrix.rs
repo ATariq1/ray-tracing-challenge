@@ -30,6 +30,20 @@ impl Matrix {
         Matrix {dim, matrix}
     }
 
+    pub fn transpose(&self) -> Matrix {
+        
+        let mut ret = Matrix::with_dim(4);
+
+        for row in 0..4 {
+            for col in 0..4 {
+
+                ret.set(col,row,self.get(row,col));
+            }
+        }
+
+        ret
+    }
+
     pub fn identity() -> Matrix {
 
         let dim = 4usize;
@@ -230,9 +244,37 @@ mod tests {
 
         let i = Matrix::identity();
 
-        let result = a.clone()*i;
+        let r1 = a.clone()*i;
 
-        assert_eq!(result, a);
+        assert_eq!(r1, a);
+
+        let b = geo::Geo::new(1.0,2.0,3.0,4.0);
+        
+        let r2 = Matrix::identity() * b;
+
+        assert_eq!(r2,b);
+    }
+
+    #[test]
+    fn test_transpose () {
+
+        let a = Matrix::with_vec(
+                vec![0.0, 9.0, 3.0, 0.0,
+                     9.0, 8.0, 0.0, 8.0,
+                     1.0, 8.0, 5.0, 3.0,
+                     0.0, 0.0, 5.0, 8.0]);
+
+        let t = a.transpose();
+
+        let c = Matrix::with_vec(
+            vec![0.0, 9.0, 1.0, 0.0,
+                 9.0, 8.0, 8.0, 0.0,
+                 3.0, 0.0, 5.0, 5.0,
+                 0.0, 8.0, 3.0, 8.0]);
+
+        assert_eq!(t,c);
+
+        assert_eq!(Matrix::identity(), Matrix::identity().transpose());
 
     }
 }
