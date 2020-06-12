@@ -66,6 +66,29 @@ impl Matrix {
         self.matrix[row*self.dim + col] = val;
 
     }
+
+    pub fn det(m:Matrix) -> f64 {
+
+        m.get(0,0)*m.get(1,1) - m.get(0,1)*m.get(1,0)
+
+    }
+
+    pub fn sub(&self, i:usize,j:usize) -> Matrix {
+
+        let mut vec = Vec::new();
+
+        for row in 0..self.dim {
+            for col in 0..self.dim {
+                if row != i && col != j {
+                        
+                    vec.push(self.get(row,col));
+                }
+            }
+        }
+
+        Matrix::with_vec(vec)
+
+    }
 }
                       
 impl ops::Mul for Matrix {
@@ -275,6 +298,45 @@ mod tests {
         assert_eq!(t,c);
 
         assert_eq!(Matrix::identity(), Matrix::identity().transpose());
+    }
 
+    #[test]
+    fn test_det () {
+    
+        let a = Matrix::with_vec(
+                vec![1.0,5.0,-3.0,2.0]);
+
+
+        assert_eq!(Matrix::det(a),17.0);
+
+    }
+
+    #[test]
+    fn test_submatrix () {
+
+        let a = Matrix::with_vec(
+                vec![ 1.0, 5.0, 0.0,
+                     -3.0, 2.0, 7.0,
+                      0.0, 6.0, -3.0]);
+        
+        let e1= Matrix::with_vec(
+                vec![-3.0, 2.0,
+                      0.0, 6.0]);
+
+        assert_eq!(a.sub(0,2),e1);    
+
+
+        let b = Matrix::with_vec(
+                vec![-6.0, 1.0, 1.0, 6.0,
+                     -8.0, 5.0, 8.0, 6.0,
+                     -1.0, 0.0, 8.0, 2.0,
+                     -7.0, 1.0,-1.0, 1.0]);
+
+        let e2= Matrix::with_vec(
+                vec![-6.0, 1.0, 6.0,
+                     -8.0, 8.0, 6.0,
+                     -7.0,-1.0, 1.0]);
+
+        assert_eq!(b.sub(2,1),e2)
     }
 }

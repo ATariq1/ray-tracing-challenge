@@ -25,7 +25,7 @@ pub fn tick(env:Environment, proj:Projectile) -> Projectile {
 pub fn simulate(p:Projectile, e:Environment,mut c:canvas::Canvas) {
     let mut projectile = p;
     
-    let green = color::Color::new(0.0,1.0,0.0);
+    let green = color::Color::new(1.0,0.65,0.0);
 
     while projectile.position.y > 0.0 {
         
