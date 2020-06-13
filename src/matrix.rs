@@ -67,9 +67,20 @@ impl Matrix {
 
     }
 
-    pub fn det(m:Matrix) -> f64 {
+    pub fn det(&self) -> f64 {
 
-        m.get(0,0)*m.get(1,1) - m.get(0,1)*m.get(1,0)
+        if self.dim == 2 { 
+            return self.get(0,0)*self.get(1,1) - self.get(0,1)*self.get(1,0);
+        }
+
+        let mut ret = 0.0;
+
+        for col in 0..self.dim {
+
+            ret += self.get(0,col)*self.cofactor(0,col);
+        }
+
+        return ret;
 
     }
 
@@ -87,6 +98,22 @@ impl Matrix {
         }
 
         Matrix::with_vec(vec)
+
+    }
+
+    pub fn minor(&self, i:usize, j:usize) -> f64 {
+
+        self.sub(i,j).det()
+
+    }
+
+    pub fn cofactor(&self, i:usize, j:usize) -> f64 {
+
+        if (i + j) % 2 == 0 {
+            return self.minor(i,j);
+        } else {
+            return self.minor(i,j)*-1.0;
+        }
 
     }
 }
@@ -307,7 +334,7 @@ mod tests {
                 vec![1.0,5.0,-3.0,2.0]);
 
 
-        assert_eq!(Matrix::det(a),17.0);
+        assert_eq!(a.det(),17.0);
 
     }
 
@@ -339,4 +366,82 @@ mod tests {
 
         assert_eq!(b.sub(2,1),e2)
     }
+
+    #[test]
+    fn test_minor () {
+
+        let a = Matrix::with_vec(
+                vec![ 3.0, 5.0, 0.0,
+                      2.0,-1.0,-7.0,
+                      6.0,-1.0, 5.0]);
+
+        assert_eq!(a.minor(1,0),25.0)
+    }
+
+    #[test]
+    fn test_cofactor () {
+
+        let a = Matrix::with_vec(
+                vec![ 3.0, 5.0, 0.0,
+                      2.0,-1.0,-7.0,
+                      6.0,-1.0, 5.0]);
+
+        assert_eq!(a.minor(0,0),   -12.0);
+        assert_eq!(a.cofactor(0,0),-12.0);
+        assert_eq!(a.minor(1,0),    25.0);
+        assert_eq!(a.cofactor(1,0),-25.0);
+    }
+
+    #[test]
+    fn test_3x3_determinant () {
+
+        let a = Matrix::with_vec(
+                vec![ 1.0, 2.0, 6.0,
+                     -5.0, 8.0,-4.0,
+                      2.0, 6.0, 4.0]);
+
+        assert_eq!(a.cofactor(0,0), 56.0);
+        assert_eq!(a.cofactor(0,1), 12.0);
+        assert_eq!(a.cofactor(0,2),-46.0);
+        assert_eq!(a.det(),-196.0);
+    }
+
+    #[test]
+    fn test_4x4_determinant () {
+
+        let a = Matrix::with_vec(
+                vec![-2.0,-8.0, 3.0, 5.0,
+                     -3.0, 1.0, 7.0, 3.0,
+                      1.0, 2.0,-9.0, 6.0,
+                     -6.0, 7.0, 7.0,-9.0]);
+
+        assert_eq!(a.cofactor(0,0), 690.0);
+        assert_eq!(a.cofactor(0,1), 447.0);
+        assert_eq!(a.cofactor(0,2), 210.0);
+        assert_eq!(a.cofactor(0,3), 51.0);
+        assert_eq!(a.det(),-4071.0);
+    }
+
+    #[test]
+    fn test_invertible () {
+
+        let a = Matrix::with_vec(
+                vec![ 6.0, 4.0, 4.0, 4.0,
+                      5.0, 5.0, 7.0, 6.0,
+                      4.0,-9.0, 3.0,-7.0,
+                      9.0, 1.0, 7.0,-6.0]);
+
+        assert_eq!(a.det(),-2120.0);
+        
+        let a = Matrix::with_vec(
+                vec![-4.0, 2.0,-2.0,-3.0,
+                      9.0, 6.0, 2.0, 6.0,
+                      0.0,-5.0, 1.0,-5.0,
+                      0.0, 0.0, 0.0, 0.0]);
+
+        assert_eq!(a.det(),0.0);
+        
+
+    }
+
 }
