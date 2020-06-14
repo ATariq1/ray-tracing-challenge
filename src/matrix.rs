@@ -2,7 +2,6 @@ use std::ops;
 use std::fmt;
 use crate::geo;
 
-
 #[derive(Clone)]
 pub struct Matrix {
     dim : usize,
@@ -116,6 +115,24 @@ impl Matrix {
         }
 
     }
+
+    pub fn inverse(&self) -> Matrix {
+
+        let det = self.det();
+        let mut ret = Matrix::with_dim(self.dim);
+
+        assert!(det != 0.0);
+        
+        for row in 0..self.dim {
+            for col in 0..self.dim {
+                let c   = self.cofactor(row,col);
+                let val = c/det;
+                ret.set(col,row,val);
+            }
+        }
+
+        ret
+    }
 }
                       
 impl ops::Mul for Matrix {
@@ -161,15 +178,16 @@ impl fmt::Debug for Matrix {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_struct("Matrix")
          .field("dim", &self.dim)
-         .field("matrix", &self.matrix.iter().fold(String::new(), |acc, &arg| acc + " " + &arg.to_string()))
+         .field("matrix", &self.matrix.iter().fold(String::new(), |acc, &arg| acc + "   " + &arg.to_string()))
          .finish()
     }
 }
 
 impl PartialEq for Matrix {
-    fn eq(&self, other: &Self) -> bool {
+    fn eq(&self, rhs: &Self) -> bool {
     
-        return self.dim == other.dim && self.matrix == other.matrix;
+        (self.dim == rhs.dim && 
+         self.matrix.iter().zip(&rhs.matrix).all(|(a,b)| (a-b).abs() < geo::EPSILON))
     
     }
 }
@@ -440,8 +458,67 @@ mod tests {
                       0.0, 0.0, 0.0, 0.0]);
 
         assert_eq!(a.det(),0.0);
-        
 
+    }
+
+
+    #[test]
+    fn test_inverse0 () {
+
+        let a = Matrix::with_vec(
+                vec![-5.0, 2.0, 6.0,-8.0,
+                      1.0,-5.0, 1.0, 8.0,
+                      7.0, 7.0,-6.0,-7.0,
+                      1.0,-3.0, 7.0, 4.0]);
+
+        assert_eq!(a.det(),532.0);
+        assert_eq!(a.cofactor(2,3),-160.0);
+        
+        let b = a.inverse();
+
+        assert_eq!(b.get(3,2),-160.0/532.0);
+        assert_eq!(a.cofactor(3,2),105.0);
+        assert_eq!(b.get(2,3),105.0/532.0);
+
+        assert_eq!(a * b,Matrix::identity());
+    }
+
+    #[test]
+    fn test_inverse1 () {
+
+        let a = Matrix::with_vec(
+                vec![ 4.0, 0.0, 0.0, 0.0,
+                      0.0, 0.0, 2.0, 0.0,
+                      0.0, 1.0, 2.0, 0.0,
+                      1.0, 0.0, 0.0, 1.0]);
+
+        let e = Matrix::with_vec(
+                vec![ 0.25, 0.0, 0.0, 0.0,
+                      0.0, -1.0, 1.0, 0.0,
+                      0.0,  0.5, 0.0, 0.0,
+                     -0.25, 0.0, 0.0, 1.0]);
+
+        assert_eq!(a.inverse(),e);
+    }
+
+
+
+    #[test]
+    fn test_inverse2 () {
+
+        let a = Matrix::with_vec(
+                vec![ 8.0,-5.0, 9.0, 2.0,
+                      7.0, 5.0, 6.0, 1.0,
+                     -6.0, 0.0, 9.0, 6.0,
+                     -3.0, 0.0,-9.0,-4.0]);
+
+        let e = Matrix::with_vec(
+                vec![ -0.15385, -0.15385, -0.28205, -0.53846,
+                      -0.07692,  0.12308,  0.02564,  0.03077,
+                       0.35897,  0.35897,  0.43590,  0.92308,
+                      -0.69231, -0.69231, -0.76923, -1.92308]);
+
+        assert_eq!(a.inverse(),e);
     }
 
 }

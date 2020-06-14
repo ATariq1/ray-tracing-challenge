@@ -2,7 +2,7 @@ use std::ops;
 
 const VECTOR_W:f64 = 0.0;
 const  POINT_W:f64 = 1.0;
-const  EPSILON:f64 = 0.0000001;
+pub const  EPSILON:f64 = 0.00001;
 
 #[derive(Debug,Copy,Clone)]
 pub struct Geo {
