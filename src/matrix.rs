@@ -133,6 +133,29 @@ impl Matrix {
 
         ret
     }
+
+    pub fn translate(x:f64,y:f64,z:f64) -> Matrix {
+
+        let vec = vec![1.0, 0.0, 0.0, x,
+                       0.0, 1.0, 0.0, y,
+                       0.0, 0.0, 1.0, z,
+                       0.0, 0.0, 0.0, 1.0];
+
+        Matrix { dim:4, matrix:vec}
+
+    }
+
+    pub fn scale(x:f64,y:f64,z:f64) -> Matrix {
+
+        let vec = vec![  x, 0.0, 0.0, 0.0,
+                       0.0,   y, 0.0, 0.0,
+                       0.0, 0.0,   z, 0.0,
+                       0.0, 0.0, 0.0, 1.0];
+
+        Matrix { dim:4, matrix:vec}
+
+    }
+
 }
                       
 impl ops::Mul for Matrix {
@@ -186,8 +209,8 @@ impl fmt::Debug for Matrix {
 impl PartialEq for Matrix {
     fn eq(&self, rhs: &Self) -> bool {
     
-        (self.dim == rhs.dim && 
-         self.matrix.iter().zip(&rhs.matrix).all(|(a,b)| (a-b).abs() < geo::EPSILON))
+        self.dim == rhs.dim && 
+        self.matrix.iter().zip(&rhs.matrix).all(|(a,b)| (a-b).abs() < geo::EPSILON)
     
     }
 }
@@ -518,7 +541,85 @@ mod tests {
                        0.35897,  0.35897,  0.43590,  0.92308,
                       -0.69231, -0.69231, -0.76923, -1.92308]);
 
-        assert_eq!(a.inverse(),e);
+        let b = a.inverse();
+
+        assert_eq!(b,e);
+        assert_eq!(a*b,Matrix::identity());
     }
 
+    #[test]
+    fn test_translate0 () {
+
+        let t = Matrix::translate(5.0, -3.0, 2.0);
+        let p = geo::Geo::point(-3.0, 4.0, 5.0);
+
+        assert_eq!(t*p, geo::Geo::point(2.0,1.0,7.0));
+
+    }
+
+    #[test]
+    fn test_translate1 () {
+
+        let t0 = Matrix::translate(5.0, -3.0, 2.0);
+        let t1 = t0.inverse();
+        let p = geo::Geo::point(-3.0, 4.0, 5.0);
+
+        assert_eq!(t1*p, geo::Geo::point(-8.0,7.0,3.0));
+
+    }
+
+    #[test]
+    fn test_translate2 () {
+
+        let t = Matrix::translate(5.0, -3.0, 2.0);
+        let v = geo::Geo::vector(-3.0, 4.0, 5.0);
+
+        assert_eq!(t*v, geo::Geo::vector(-3.0,4.0,5.0));
+
+    }
+
+
+    #[test]
+    fn test_scale0 () {
+
+        let t = Matrix::scale(2.0, 3.0, 4.0);
+        let p = geo::Geo::point(-4.0, 6.0, 8.0);
+
+        assert_eq!(t*p, geo::Geo::point(-8.0,18.0,32.0));
+
+    }
+
+    #[test]
+    fn test_scale1 () {
+
+        let t = Matrix::scale(2.0, 3.0, 4.0);
+        let p = geo::Geo::vector(-4.0, 6.0, 8.0);
+
+        assert_eq!(t*p, geo::Geo::vector(-8.0,18.0,32.0));
+
+    }
+
+    #[test]
+    fn test_scale2 () {
+
+        let t = Matrix::scale(2.0, 3.0, 4.0).inverse(); 
+        let p  = geo::Geo::vector(-4.0, 6.0, 8.0);
+
+        assert_eq!(t*p, geo::Geo::vector(-2.0,2.0,2.0));
+
+    }
+
+    #[test]
+    fn test_reflect () {
+
+        let t = Matrix::scale(-1.0, 1.0, 1.0); 
+        let p  = geo::Geo::point(2.0, 3.0, 4.0);
+
+        assert_eq!(t*p, geo::Geo::point(-2.0,3.0,4.0));
+
+    }
+
+
+
 }
+
