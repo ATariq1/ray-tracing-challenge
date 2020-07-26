@@ -1,3 +1,4 @@
+use std::f64::consts::PI;
 use std::ops;
 use std::fmt;
 use crate::geo;
@@ -156,6 +157,35 @@ impl Matrix {
 
     }
 
+    pub fn rotate_x(r:f64) -> Matrix {
+
+        let vec = vec![1.0, 0.0,     0.0,      0.0,
+                       0.0, r.cos(),-r.sin(),  0.0,
+                       0.0, r.sin(), r.cos(),  0.0,
+                       0.0, 0.0,     0.0,      1.0];
+
+        Matrix { dim:4, matrix:vec}
+    }
+
+    pub fn rotate_y(r:f64) -> Matrix {
+
+        let vec = vec![r.cos(), 0.0, r.sin(), 0.0,
+                       0.0,     1.0, 0.0,     0.0,
+                      -r.sin(), 0.0, r.cos(), 0.0,
+                       0.0,     0.0, 0.0,     1.0];
+
+        Matrix { dim:4, matrix:vec}
+    }
+
+    pub fn rotate_z(r:f64) -> Matrix {
+
+        let vec = vec![r.cos(),-r.sin(), 0.0, 0.0,
+                       r.sin(), r.cos(), 0.0, 0.0,
+                       0.0,     0.0,     1.0, 0.0,
+                       0.0,     0.0,     0.0, 1.0];
+
+        Matrix { dim:4, matrix:vec}
+    }
 }
                       
 impl ops::Mul for Matrix {
@@ -619,7 +649,19 @@ mod tests {
 
     }
 
+ 
+    #[test]
+    fn test_rotate_x () {
 
+        let t1 = Matrix::rotate_x(PI/4.0);
+        let t2 = Matrix::rotate_x(PI/2.0);
+
+        let p  = geo::Geo::point(0.0, 1.0, 0.0);
+
+        assert_eq!(t1*p, geo::Geo::point(0.0, 2.0_f64.sqrt()/2.0, 2.0_f64.sqrt()/2.0));
+        assert_eq!(t2*p, geo::Geo::point(0.0, 0.0, 1.0));
+
+    }   
 
 }
 
