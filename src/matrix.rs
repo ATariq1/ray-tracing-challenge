@@ -186,6 +186,16 @@ impl Matrix {
 
         Matrix { dim:4, matrix:vec}
     }
+
+    pub fn shear(xy:f64,xz:f64,yx:f64,yz:f64,zx:f64,zy:f64) -> Matrix {
+
+        let vec = vec![1.0,  xy,  xz, 0.0,
+                        yx, 1.0,  yz, 0.0,
+                        zx,  zy, 1.0, 0.0,
+                       0.0, 0.0, 0.0, 1.0];
+
+        Matrix { dim:4, matrix:vec}
+    }
 }
                       
 impl ops::Mul for Matrix {
@@ -662,6 +672,80 @@ mod tests {
         assert_eq!(t2*p, geo::Geo::point(0.0, 0.0, 1.0));
 
     }   
+
+    #[test]
+    fn test_rotate_y () {
+
+        let t1 = Matrix::rotate_y(PI/4.0);
+        let t2 = Matrix::rotate_y(PI/2.0);
+
+        let p  = geo::Geo::point(0.0, 0.0, 1.0);
+
+        assert_eq!(t1*p, geo::Geo::point(2.0_f64.sqrt()/2.0, 0.0 ,2.0_f64.sqrt()/2.0));
+        assert_eq!(t2*p, geo::Geo::point(1.0, 0.0, 0.0));
+
+    }   
+
+
+    #[test]
+    fn test_rotate_z () {
+
+        let t1 = Matrix::rotate_z(PI/4.0);
+        let t2 = Matrix::rotate_z(PI/2.0);
+
+        let p  = geo::Geo::point(0.0, 1.0, 0.0);
+
+        assert_eq!(t1*p, geo::Geo::point(-2.0_f64.sqrt()/2.0,2.0_f64.sqrt()/2.0, 0.0));
+        assert_eq!(t2*p, geo::Geo::point(-1.0, 0.0, 0.0));
+
+    }   
+
+    #[test]
+    fn test_shear () {
+
+        let p = geo::Geo::point(2.0,3.0,4.0);
+
+        assert_eq!(Matrix::shear(1.0,0.0,0.0,0.0,0.0,0.0)*p, geo::Geo::point(5.0,3.0,4.0));
+        assert_eq!(Matrix::shear(0.0,1.0,0.0,0.0,0.0,0.0)*p, geo::Geo::point(6.0,3.0,4.0));
+        assert_eq!(Matrix::shear(0.0,0.0,1.0,0.0,0.0,0.0)*p, geo::Geo::point(2.0,5.0,4.0));
+        assert_eq!(Matrix::shear(0.0,0.0,0.0,1.0,0.0,0.0)*p, geo::Geo::point(2.0,7.0,4.0));
+        assert_eq!(Matrix::shear(0.0,0.0,0.0,0.0,1.0,0.0)*p, geo::Geo::point(2.0,3.0,6.0));
+        assert_eq!(Matrix::shear(0.0,0.0,0.0,0.0,0.0,1.0)*p, geo::Geo::point(2.0,3.0,7.0));
+    }
+
+    #[test]
+    fn test_chain1() {
+
+        let p = geo::Geo::point(1.0,0.0,1.0);
+
+        let a = Matrix::rotate_x(PI/2.0);
+        let b = Matrix::scale(5.0,5.0,5.0);
+        let c = Matrix::translate(10.0,5.0,7.0);
+
+        let p2 = a*p;
+        assert_eq!(p2,geo::Geo::point(1.0,-1.0,0.0));
+
+        let p3 = b*p2;
+        assert_eq!(p3,geo::Geo::point(5.0,-5.0,0.0));
+
+        let p4 = c*p3;
+        assert_eq!(p4,geo::Geo::point(15.0,0.0,7.0));
+    }
+
+    #[test]
+    fn test_chain2() {
+
+        let p = geo::Geo::point(1.0,0.0,1.0);
+
+        let a = Matrix::rotate_x(PI/2.0);
+        let b = Matrix::scale(5.0,5.0,5.0);
+        let c = Matrix::translate(10.0,5.0,7.0);
+
+        let p5 = c*b*a*p;
+        assert_eq!(p5,geo::Geo::point(15.0,0.0,7.0));
+
+    }
+
 
 }
 
