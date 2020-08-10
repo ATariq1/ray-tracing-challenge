@@ -1,4 +1,5 @@
 mod geo;
+mod ray;
 mod color;
 mod canvas;
 mod matrix;
