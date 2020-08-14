@@ -4,25 +4,6 @@ const VECTOR_W:f64 = 0.0;
 const  POINT_W:f64 = 1.0;
 pub const  EPSILON:f64 = 0.00001;
 
-#[derive(Debug,Copy,Clone)]
-pub struct Ray {
-
-    pub orig:Geo,
-    pub dir:Geo
-}
-
-impl Ray {
-
-    pub fn new(origin:Geo, direction:Geo) -> Ray {
-        Ray {orig:origin, dir:direction}
-    }
-
-    pub fn position(&self,t:f64) -> Geo {
-
-        self.orig + self.dir*t
-
-    }
-}
 
 #[derive(Debug,Copy,Clone)]
 pub struct Geo {
@@ -358,31 +339,6 @@ mod tests {
         assert_eq!(result1,Geo::vector(-1.0,2.0,-1.0));
         assert_eq!(result2,Geo::vector(1.0,-2.0,1.0));
     }
-
-    #[test]
-    fn test_ray() {
-
-        let origin    = Geo::point( 1.0,2.0,3.0);
-        let direction = Geo::vector(4.0,5.0,6.0);
-
-        let r = Ray::new(origin,direction);
-
-        assert_eq!(r.orig,Geo::point(1.0,2.0,3.0));
-        assert_eq!(r.dir,Geo::vector(4.0,5.0,6.0));
-
-    }
-
-    #[test]
-    fn test_ray_dist() {
-
-        let r = Ray::new(Geo::point(2.0,3.0,4.0),Geo::vector(1.0,0.0,0.0));
-        
-        assert_eq!(r.position(0.0),Geo::point(2.0,3.0,4.0));
-        assert_eq!(r.position(1.0),Geo::point(3.0,3.0,4.0));
-        assert_eq!(r.position(-1.0),Geo::point(1.0,3.0,4.0));
-        assert_eq!(r.position(2.5),Geo::point(4.5,3.0,4.0));
-    }
-
 }
 
 
