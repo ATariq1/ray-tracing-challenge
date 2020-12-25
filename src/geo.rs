@@ -152,7 +152,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_tup_is_point () {
+    fn tup_is_point () {
 
         let p = Geo::new(4.3,-4.2,3.1,1.0);
 
@@ -161,7 +161,7 @@ mod tests {
     }
 
     #[test]
-    fn test_tup_is_vector() {
+    fn tup_is_vector() {
         let v = Geo::new(4.3,-4.2,3.1,0.0);
 
         assert_eq!(v.is_point(),  false);
@@ -169,19 +169,19 @@ mod tests {
     }
     
     #[test]
-    fn test_point_w_1() {
+    fn point_w_1() {
         let t = Geo::point(1.0,-5.0,10.0);
         assert_eq!(t.w,POINT_W);
     }
 
     #[test]
-    fn test_vector_w_0() {
+    fn vector_w_0() {
         let t = Geo::vector(1.0,-5.0,10.0);
         assert_eq!(t.w,VECTOR_W);
     }
 
     #[test]
-    fn test_equality() {
+    fn equality() {
         let v  = Geo::vector(1.0, -1.0, 2.0);
         let p  = Geo::point( 1.0, -1.0, 2.0);
         let tp = Geo::new(1.0,-1.0,2.0,1.0);
@@ -199,7 +199,7 @@ mod tests {
     }
 
     #[test]
-    fn test_addition() {
+    fn addition() {
         let a1 = Geo::new(3.0,-2.0,5.0,1.0);
         let a2 = Geo::new(-2.0,3.0,1.0,0.0);
 
@@ -209,7 +209,7 @@ mod tests {
     }
 
     #[test]
-    fn test_subtraction1() {
+    fn subtraction1() {
         let a1 = Geo::point(3.0,2.0,1.0);
         let a2 = Geo::point(5.0,6.0,7.0);
 
@@ -220,7 +220,7 @@ mod tests {
     }
 
     #[test]
-    fn test_subtraction2() {
+    fn subtraction2() {
         let a1 = Geo::point(3.0,2.0,1.0);
         let a2 = Geo::vector(5.0,6.0,7.0);
 
@@ -231,7 +231,7 @@ mod tests {
     }
 
     #[test]
-    fn test_subtraction3() {
+    fn subtraction3() {
         let a1 = Geo::vector(3.0,2.0,1.0);
         let a2 = Geo::vector(5.0,6.0,7.0);
 
@@ -242,7 +242,7 @@ mod tests {
     }
 
     #[test]
-    fn test_negate1() {
+    fn negate1() {
         let z  = Geo::vector(0.0,0.0,0.0);
         let a2 = Geo::vector(1.0,-2.0,-3.0);
 
@@ -253,7 +253,7 @@ mod tests {
     }
 
     #[test]
-    fn test_negate2() {
+    fn negate2() {
         let a = Geo::new(1.0,-2.0,-3.0,-4.0);
 
         let result = -a;
@@ -262,7 +262,7 @@ mod tests {
     }
 
     #[test]
-    fn test_cmul1() {
+    fn cmul1() {
         let a = Geo::new(1.0,-2.0,3.0,-4.0);
         let result = 3.5*a;
 
@@ -270,7 +270,7 @@ mod tests {
     }
 
     #[test]
-    fn test_cmul2() {
+    fn cmul2() {
         let a = Geo::new(1.0,-2.0,3.0,-4.0);
         let result = 0.5 * a;
 
@@ -278,14 +278,14 @@ mod tests {
     }
 
     #[test]
-    fn test_cdiv() {
+    fn cdiv() {
         let a = Geo::new(1.0,-2.0,3.0,-4.0);
         let result = a/2.0;
         assert_eq!(result,Geo::new(0.5,-1.0,1.5,-2.0));
     }
 
     #[test]
-    fn test_magnitude() {
+    fn magnitude() {
         let v1 = Geo::vector(1.0,0.0,0.0);
         assert_eq!(v1.len(),1.0);
 
@@ -303,7 +303,7 @@ mod tests {
     }
 
     #[test]
-    fn test_normalization() {
+    fn normalization() {
         let v1 = Geo::vector(4.0,0.0,0.0);
         assert_eq!(v1.norm(),Geo::vector(1.0,0.0,0.0));
 
@@ -316,7 +316,7 @@ mod tests {
     }
 
     #[test]
-    fn test_dot() {
+    fn dot() {
         let v1 = Geo::vector(1.0,2.0,3.0);
         let v2 = Geo::vector(2.0,3.0,4.0);
 
@@ -328,7 +328,7 @@ mod tests {
     }
 
     #[test]
-    fn test_cross() {
+    fn cross() {
         let v1 = Geo::vector(1.0,2.0,3.0);
         let v2 = Geo::vector(2.0,3.0,4.0);
 

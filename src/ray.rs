@@ -54,12 +54,13 @@ impl Ray {
 }
 
 
-#[derive(Debug,Copy,Clone)]
+#[derive(Debug,Clone)]
 pub struct Sphere {
 
         id:i32,
     pub orig:geo::Geo,
-    pub radius: f64
+    pub radius: f64,
+    pub transform: matrix::Matrix
 }
 
 
@@ -68,7 +69,7 @@ impl Sphere {
     pub fn unit() -> Sphere {
         
         let id = SHAPE_ID.fetch_add(1,Ordering::SeqCst);
-        Sphere {id:id ,orig: geo::Geo::point(0.0,0.0,0.0), radius:1.0}
+        Sphere {id:id ,orig: geo::Geo::point(0.0,0.0,0.0), radius:1.0, transform:matrix::Matrix::identity()}
     }
 }
 
@@ -131,7 +132,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_ray() {
+    fn ray() {
 
         let origin    = geo::Geo::point( 1.0,2.0,3.0);
         let direction = geo::Geo::vector(4.0,5.0,6.0);
@@ -144,7 +145,7 @@ mod tests {
     }
 
     #[test]
-    fn test_ray_dist() {
+    fn ray_dist() {
 
         let r = Ray::new(geo::Geo::point(2.0,3.0,4.0),geo::Geo::vector(1.0,0.0,0.0));
         
@@ -156,7 +157,7 @@ mod tests {
 
 
     #[test]
-    fn test_intersect1() {
+    fn intersect1() {
 
         let r = Ray::new(
             geo::Geo::point( 0.0, 0.0,-5.0),
@@ -173,7 +174,7 @@ mod tests {
     }
 
     #[test]
-    fn test_intersect2() {
+    fn intersect2() {
 
         let r = Ray::new(
             geo::Geo::point( 0.0, 1.0,-5.0),
@@ -190,7 +191,7 @@ mod tests {
     }
 
     #[test]
-    fn test_intersect3() {
+    fn intersect3() {
 
         let r = Ray::new(
             geo::Geo::point( 0.0, 2.0,-5.0),
@@ -205,7 +206,7 @@ mod tests {
     }
 
     #[test]
-    fn test_intersect4() {
+    fn intersect4() {
 
         let r = Ray::new(
             geo::Geo::point( 0.0, 0.0, 0.0),
@@ -222,7 +223,7 @@ mod tests {
     }
 
     #[test]
-    fn test_intersect5() {
+    fn intersect5() {
 
         let r = Ray::new(
             geo::Geo::point( 0.0, 0.0, 5.0),
@@ -240,7 +241,7 @@ mod tests {
 
 
     #[test]
-    fn test_isect() {
+    fn isect() {
 
         let s = Sphere::unit();
         let i = Isect::isect(3.5,s.id);
@@ -250,7 +251,7 @@ mod tests {
     }
 
     #[test]
-    fn test_isect_struct() {
+    fn isect_struct() {
 
         let s = Sphere::unit();
         let i1 = Isect::isect(1.0,s.id);
@@ -262,23 +263,24 @@ mod tests {
     }
 
     #[test]
-    fn test_isect3() {
+    fn isect3() {
 
         let r = Ray::new(
             geo::Geo::point( 0.0, 0.0,-5.0),
             geo::Geo::vector(0.0, 0.0, 1.0));
 
         let s = Sphere::unit();
-
+        let check = s.id;
         let xs = r.intersect(s);
         
         assert_eq!(xs.len(),2);
-        assert_eq!(xs[0].id,s.id);
-        assert_eq!(xs[1].id,s.id);
+ 
+        assert_eq!(xs[0].id,check);
+        assert_eq!(xs[1].id,check);
     }
 
     #[test]
-    fn test_hit_all_positive() {
+    fn hit_all_positive() {
 
         let s = Sphere::unit();
 
@@ -293,7 +295,7 @@ mod tests {
     }
 
     #[test]
-    fn test_hit_some_negative() {
+    fn hit_some_negative() {
 
         let s = Sphere::unit();
 
@@ -308,7 +310,7 @@ mod tests {
     }
 
     #[test]
-    fn test_hit_all_negative() {
+    fn hit_all_negative() {
 
         let s = Sphere::unit();
 
@@ -325,7 +327,7 @@ mod tests {
 
     
     #[test]
-    fn test_hit_many() {
+    fn hit_many() {
 
         let s = Sphere::unit();
 
@@ -343,7 +345,7 @@ mod tests {
 }
 
 #[test]
-fn test_translate_ray() {
+fn translate_ray() {
 
     let r = Ray::new(
         geo::Geo::point( 1.0, 2.0, 3.0),
@@ -358,7 +360,7 @@ fn test_translate_ray() {
 }
 
 #[test]
-fn test_scale_ray() {
+fn scale_ray() {
 
     let r = Ray::new(
         geo::Geo::point( 1.0, 2.0, 3.0),

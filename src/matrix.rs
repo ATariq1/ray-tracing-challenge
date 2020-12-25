@@ -263,7 +263,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_4x4_matrix () {
+    fn matrix_4x4 () {
 
         let m = Matrix::with_vec(vec![1.0, 2.0, 3.0, 4.0,
                                       5.5, 6.5, 7.5, 8.5,
@@ -280,7 +280,7 @@ mod tests {
     }
 
     #[test]
-    fn test_3x3_matrix () {
+    fn matrix_3x3 () {
 
         let m = Matrix::with_vec(vec![-3.0, 5.0, 0.0,
                                        1.0,-2.0,-7.0,
@@ -292,7 +292,7 @@ mod tests {
     }
 
     #[test]
-    fn test_2x2_matrix () {
+    fn matrix_2x2 () {
 
         let m = Matrix::with_vec(vec![-3.0, 5.0,
                                        1.0,-2.0]);
@@ -304,7 +304,7 @@ mod tests {
     }
 
     #[test]
-    fn test_matrix_equality () {
+    fn matrix_equality () {
 
         let a = Matrix::with_vec(vec![1.0,2.0,3.0,4.0,
                                       5.0,6.0,7.0,8.0,
@@ -322,7 +322,7 @@ mod tests {
     }
 
     #[test]
-    fn test_matrix_multiply () {
+    fn matrix_multiply () {
 
         let a = Matrix::with_vec(
                 vec![1.0,2.0,3.0,4.0,
@@ -349,7 +349,7 @@ mod tests {
     }
 
     #[test]
-    fn test_matrix_vector_multiply () {
+    fn matrix_vector_multiply () {
 
         let a = Matrix::with_vec(
                 vec![1.0, 2.0, 3.0, 4.0,
@@ -365,7 +365,7 @@ mod tests {
 
 
     #[test]
-    fn test_matrix_identity_multiply () {
+    fn matrix_identity_multiply () {
 
         let a = Matrix::with_vec(
                 vec![0.0, 1.0, 2.0, 4.0,
@@ -387,7 +387,7 @@ mod tests {
     }
 
     #[test]
-    fn test_transpose () {
+    fn transpose () {
 
         let a = Matrix::with_vec(
                 vec![0.0, 9.0, 3.0, 0.0,
@@ -409,7 +409,7 @@ mod tests {
     }
 
     #[test]
-    fn test_det () {
+    fn det () {
     
         let a = Matrix::with_vec(
                 vec![1.0,5.0,-3.0,2.0]);
@@ -420,7 +420,7 @@ mod tests {
     }
 
     #[test]
-    fn test_submatrix () {
+    fn submatrix () {
 
         let a = Matrix::with_vec(
                 vec![ 1.0, 5.0, 0.0,
@@ -449,7 +449,7 @@ mod tests {
     }
 
     #[test]
-    fn test_minor () {
+    fn minor () {
 
         let a = Matrix::with_vec(
                 vec![ 3.0, 5.0, 0.0,
@@ -460,7 +460,7 @@ mod tests {
     }
 
     #[test]
-    fn test_cofactor () {
+    fn cofactor () {
 
         let a = Matrix::with_vec(
                 vec![ 3.0, 5.0, 0.0,
@@ -474,7 +474,7 @@ mod tests {
     }
 
     #[test]
-    fn test_3x3_determinant () {
+    fn determinant_3x3 () {
 
         let a = Matrix::with_vec(
                 vec![ 1.0, 2.0, 6.0,
@@ -488,7 +488,7 @@ mod tests {
     }
 
     #[test]
-    fn test_4x4_determinant () {
+    fn determinant_4x4 () {
 
         let a = Matrix::with_vec(
                 vec![-2.0,-8.0, 3.0, 5.0,
@@ -504,7 +504,7 @@ mod tests {
     }
 
     #[test]
-    fn test_invertible () {
+    fn invertible () {
 
         let a = Matrix::with_vec(
                 vec![ 6.0, 4.0, 4.0, 4.0,
@@ -526,7 +526,7 @@ mod tests {
 
 
     #[test]
-    fn test_inverse0 () {
+    fn inverse0 () {
 
         let a = Matrix::with_vec(
                 vec![-5.0, 2.0, 6.0,-8.0,
@@ -547,7 +547,7 @@ mod tests {
     }
 
     #[test]
-    fn test_inverse1 () {
+    fn inverse1 () {
 
         let a = Matrix::with_vec(
                 vec![ 4.0, 0.0, 0.0, 0.0,
@@ -567,7 +567,7 @@ mod tests {
 
 
     #[test]
-    fn test_inverse2 () {
+    fn inverse2 () {
 
         let a = Matrix::with_vec(
                 vec![ 8.0,-5.0, 9.0, 2.0,
@@ -588,7 +588,7 @@ mod tests {
     }
 
     #[test]
-    fn test_translate0 () {
+    fn translate0 () {
 
         let t = Matrix::translate(5.0, -3.0, 2.0);
         let p = geo::Geo::point(-3.0, 4.0, 5.0);
@@ -598,7 +598,7 @@ mod tests {
     }
 
     #[test]
-    fn test_translate1 () {
+    fn translate1 () {
 
         let t0 = Matrix::translate(5.0, -3.0, 2.0);
         let t1 = t0.inverse();
@@ -609,7 +609,7 @@ mod tests {
     }
 
     #[test]
-    fn test_translate2 () {
+    fn translate2 () {
 
         let t = Matrix::translate(5.0, -3.0, 2.0);
         let v = geo::Geo::vector(-3.0, 4.0, 5.0);
@@ -620,7 +620,7 @@ mod tests {
 
 
     #[test]
-    fn test_scale0 () {
+    fn scale0 () {
 
         let t = Matrix::scale(2.0, 3.0, 4.0);
         let p = geo::Geo::point(-4.0, 6.0, 8.0);
@@ -630,7 +630,7 @@ mod tests {
     }
 
     #[test]
-    fn test_scale1 () {
+    fn scale1 () {
 
         let t = Matrix::scale(2.0, 3.0, 4.0);
         let p = geo::Geo::vector(-4.0, 6.0, 8.0);
@@ -640,7 +640,7 @@ mod tests {
     }
 
     #[test]
-    fn test_scale2 () {
+    fn scale2 () {
 
         let t = Matrix::scale(2.0, 3.0, 4.0).inverse(); 
         let p  = geo::Geo::vector(-4.0, 6.0, 8.0);
@@ -650,7 +650,7 @@ mod tests {
     }
 
     #[test]
-    fn test_reflect () {
+    fn reflect () {
 
         let t = Matrix::scale(-1.0, 1.0, 1.0); 
         let p  = geo::Geo::point(2.0, 3.0, 4.0);
@@ -661,7 +661,7 @@ mod tests {
 
  
     #[test]
-    fn test_rotate_x () {
+    fn rotate_x () {
 
         let t1 = Matrix::rotate_x(PI/4.0);
         let t2 = Matrix::rotate_x(PI/2.0);
@@ -674,7 +674,7 @@ mod tests {
     }   
 
     #[test]
-    fn test_rotate_y () {
+    fn rotate_y () {
 
         let t1 = Matrix::rotate_y(PI/4.0);
         let t2 = Matrix::rotate_y(PI/2.0);
@@ -688,7 +688,7 @@ mod tests {
 
 
     #[test]
-    fn test_rotate_z () {
+    fn rotate_z () {
 
         let t1 = Matrix::rotate_z(PI/4.0);
         let t2 = Matrix::rotate_z(PI/2.0);
@@ -701,7 +701,7 @@ mod tests {
     }   
 
     #[test]
-    fn test_shear () {
+    fn shear () {
 
         let p = geo::Geo::point(2.0,3.0,4.0);
 
@@ -714,7 +714,7 @@ mod tests {
     }
 
     #[test]
-    fn test_chain1() {
+    fn chain1() {
 
         let p = geo::Geo::point(1.0,0.0,1.0);
 
@@ -733,7 +733,7 @@ mod tests {
     }
 
     #[test]
-    fn test_chain2() {
+    fn chain2() {
 
         let p = geo::Geo::point(1.0,0.0,1.0);
 

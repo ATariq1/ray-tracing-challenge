@@ -110,7 +110,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_color_values () {
+    fn color_values () {
 
         let c = Color::new(-0.5, 0.4, 1.7);
 
@@ -120,7 +120,7 @@ mod tests {
     }
 
     #[test]
-    fn test_color_adding () {
+    fn color_adding () {
         let c1 = Color::new(0.9,0.6,0.75);
         let c2 = Color::new(0.7,0.1,0.25);
         let result = c1 + c2;
@@ -130,7 +130,7 @@ mod tests {
 
  
     #[test]
-    fn test_color_subtracting () {
+    fn color_subtracting () {
         let c1 = Color::new(0.9, 0.6, 0.75);
         let c2 = Color::new(0.7, 0.1, 0.25);
         let result = c1 - c2;
@@ -139,14 +139,14 @@ mod tests {
     }
 
     #[test]
-    fn test_cmul () {
+    fn cmul () {
 
         let result = 2.0*Color::new(0.2,0.3,0.4);
         assert_eq!(result,Color::new(0.4,0.6,0.8));
     }
 
     #[test]
-    fn test_hadamard () {
+    fn hadamard () {
         let c1 = Color::new(1.0,0.2,0.4);
         let c2 = Color::new(0.9,1.0,0.1);
 
@@ -156,7 +156,7 @@ mod tests {
     }
 
     #[test]
-    fn test_ppm () {
+    fn ppm () {
 
         let c1 = Color::new(1.0,1.0,1.0);
         let r1 = c1.to_ppm(255);

@@ -88,7 +88,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_empty_canvas () {
+    fn empty_canvas () {
 
         let c = Canvas::new(10,20);
         let black = color::Color::new(0.0,0.0,0.0); 
@@ -104,7 +104,7 @@ mod tests {
     }
 
     #[test]
-    fn test_pixel_write () {
+    fn pixel_write () {
     
         let mut c = Canvas::new(10,20);
         let red = color::Color::new(1.0,0.0,0.0);
@@ -116,7 +116,7 @@ mod tests {
     }
 
     #[test]
-    fn test_ppm_conversion() {
+    fn ppm_conversion() {
 
         let c = Canvas::new(3,3);
 
@@ -134,7 +134,7 @@ mod tests {
     }
 
     #[test]
-    fn test_color_bounds() {
+    fn color_bounds() {
     
         let mut c = Canvas::new(5,3);
         
@@ -160,7 +160,7 @@ mod tests {
     }
 
     #[test]
-    fn test_fill_ppm() {
+    fn fill_ppm() {
 
         let mut c = Canvas::new(10,2);
         
