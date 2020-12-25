@@ -1,5 +1,6 @@
 use crate::geo;
 use std::sync::atomic::{AtomicI32, Ordering};
+use std::cmp::Ordering;
 
 static SHAPE_ID:AtomicI32 = AtomicI32::new(0);
 
@@ -22,7 +23,7 @@ impl Ray {
         self.orig + self.dir*t
     }
 
-    pub fn intersect(&self, s:Sphere) -> Vec<f64> {
+    pub fn intersect(&self, s:Sphere) -> Vec<Isect> {
 
         let sphere_to_ray = self.orig - s.orig;
         let a = self.dir.dot(self.dir);
@@ -38,18 +39,22 @@ impl Ray {
             let t1 = (-b - discriminant.sqrt())/(2.0*a);
             let t2 = (-b + discriminant.sqrt())/(2.0*a);
 
-            return vec![t1, t2]; 
+            return vec![Isect::isect(t1,s),
+                        Isect::isect(t2,s)]; 
         }
 
     }
 }
 
+
+#[derive(Debug,Copy,Clone)]
 pub struct Sphere {
 
         id:i32,
     pub orig:geo::Geo,
     pub radius: f64
 }
+
 
 impl Sphere {
 
@@ -66,6 +71,60 @@ impl Sphere {
 
     }
 }
+
+impl PartialEq for Sphere {
+    fn eq(&self, other: &Self) -> bool {
+        self.id == other.id
+    }
+}
+impl Eq for Sphere {}
+
+#[derive(Debug,Copy,Clone)]
+struct Isect {
+    pub t: f64,
+    pub object: Sphere
+}
+
+impl Isect {
+
+    pub fn isect(t:f64,s:Sphere) -> Isect {
+
+        Isect {t:t, object:s }
+    }
+
+    pub fn hit(isects:Vec<Isect>) -> Isect {
+
+        let ret = isects.iter()
+                    .filter(|i| i.t > 0.0)
+                    .min();
+
+        ret
+
+    }
+}
+
+
+impl PartialOrd for Isect {
+
+    fn cmp(&self,other: &Self) -> Ordering {
+        self.t.cmp(&other.t)
+    }
+}
+
+impl Ord for Isect {
+
+    fn cmp(&self,other: &Self) -> Ordering {
+        self.t.cmp(&other.t)
+    }
+}
+
+impl PartialEq for Isect {
+    fn eq(&self, other: &Self) -> bool {
+        self.t == other.t && self.object == other.object
+    }
+}
+impl Eq for Isect {}
+
 
 
 #[cfg(test)]
@@ -109,8 +168,8 @@ mod tests {
         let xs = r.intersect(s);
         
         assert_eq!(xs.len(),2);
-        assert_eq!(xs[0],4.0);
-        assert_eq!(xs[1],6.0);
+        assert_eq!(xs[0].t,4.0);
+        assert_eq!(xs[1].t,6.0);
     
     }
 
@@ -126,8 +185,8 @@ mod tests {
         let xs = r.intersect(s);
         
         assert_eq!(xs.len(),2);
-        assert_eq!(xs[0],5.0);
-        assert_eq!(xs[1],5.0);
+        assert_eq!(xs[0].t,5.0);
+        assert_eq!(xs[1].t,5.0);
     
     }
 
@@ -158,8 +217,8 @@ mod tests {
         let xs = r.intersect(s);
         
         assert_eq!(xs.len(),2);
-        assert_eq!(xs[0],-1.0);
-        assert_eq!(xs[1], 1.0);
+        assert_eq!(xs[0].t,-1.0);
+        assert_eq!(xs[1].t, 1.0);
 
     }
 
@@ -175,10 +234,39 @@ mod tests {
         let xs = r.intersect(s);
         
         assert_eq!(xs.len(),2);
-        assert_eq!(xs[0],-6.0);
-        assert_eq!(xs[1],-4.0);
+        assert_eq!(xs[0].t,-6.0);
+        assert_eq!(xs[1].t,-4.0);
     
     }
+
+
+    #[test]
+    fn test_isect() {
+
+        let s = Sphere::unit();
+        let i = Isect::isect(3.5,s);
+
+        assert_eq!(i.t,3.5);
+        assert_eq!(i.object,s);
+    }
+
+    #[test]
+    fn test_isect2() {
+
+        let r = Ray::new(
+            geo::Geo::point( 0.0, 0.0,-5.0),
+            geo::Geo::vector(0.0, 0.0, 1.0));
+
+        let s = Sphere::unit();
+
+        let xs = r.intersect(s);
+        
+        assert_eq!(xs.len(),2);
+        assert_eq!(xs[0].object,s);
+        assert_eq!(xs[1].object,s);
+    
+    }
+
 
 
 }
