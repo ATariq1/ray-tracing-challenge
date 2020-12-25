@@ -72,7 +72,7 @@ impl Sphere {
     }
 }
 
-impl PartialEq for Sphere {E
+impl PartialEq for Sphere {
     fn eq(&self, other: &Self) -> bool {
         self.id == other.id
     }
