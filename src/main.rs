@@ -17,7 +17,7 @@ fn main() {
     let mut image = canvas::Canvas::new(canvas_pixels,canvas_pixels);
     let red   = color::Color::new(1.0, 0.0, 0.0);
     let mut shape = ray::Sphere::unit();
-    shape.set_transform(matrix::Matrix::shear(1.0, 0.0, 0.0, 0.0, 0.0, 0.5));
+    shape.set_transform(matrix::Matrix::shear(-1.0, 0.0, 0.0, 0.0, 0.0, 0.5));
 
     for y in 0..(canvas_pixels-1) {
 
