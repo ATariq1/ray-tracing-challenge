@@ -7,17 +7,40 @@ mod projectile;
 
 fn main() {
 
-    let start    = geo::Geo::point( 0.0, 200.0, 0.0);
-    let velocity = geo::Geo::vector(1.0, 0.0, 0.0).norm()*11.25;
+    let ray_origin    = geo::Geo::point(0.0, 0.0, -5.0);
+    let wall_z        = 10.0;
+    let wall_size     = 7.0;
+    let canvas_pixels = 100;
+    let pixel_size = wall_size/(canvas_pixels as f64);
+    let half = wall_size/2.0; 
 
-    let p = projectile::Projectile  { position: start,
-                                      velocity: velocity};
+    let mut image = canvas::Canvas::new(canvas_pixels,canvas_pixels);
+    let red   = color::Color::new(1.0, 0.0, 0.0);
+    let mut shape = ray::Sphere::unit();
+    shape.set_transform(matrix::Matrix::shear(1.0, 0.0, 0.0, 0.0, 0.0, 0.5));
 
-    let e = projectile::Environment { gravity:  geo::Geo::vector(0.0,-0.1, 0.0),
-                                      wind:     geo::Geo::vector(-0.01,0.0,0.0) };
+    for y in 0..(canvas_pixels-1) {
 
-    let c = canvas::Canvas::new(900,550);
+        let world_y = half - pixel_size*(y as f64);
+        
+        for x in 0..(canvas_pixels-1) {
 
-    projectile::simulate(p,e,c);
+            let world_x = -half + pixel_size*(x as f64);
+
+            let position = geo::Geo::point(world_x, world_y, wall_z);
+            let r = ray::Ray::new(ray_origin, position-ray_origin);
+
+            // TODO: change to a reference function
+            let xs = r.intersect(shape.clone());
+            if ray::Isect::hit(xs).id >= 0 {
+                image.write_pixel(x, y, red);
+            }
+
+        }
+
+    }
+
+
+    image.to_ppm("ppm/sphere.ppm");
 
 }
