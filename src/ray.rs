@@ -26,9 +26,10 @@ impl Ray {
 
     pub fn intersect(&self, s:Sphere) -> Vec<Isect> {
 
-        let sphere_to_ray = self.orig - s.orig;
-        let a = self.dir.dot(self.dir);
-        let b = 2.0*self.dir.dot(sphere_to_ray);
+        let r = self.transform(s.transform.inverse());
+        let sphere_to_ray = r.orig - s.orig;
+        let a = r.dir.dot(r.dir);
+        let b = 2.0*r.dir.dot(sphere_to_ray);
         let c = sphere_to_ray.dot(sphere_to_ray) - 1.0;
 
         let discriminant = b*b - 4.0*a*c;
@@ -70,6 +71,10 @@ impl Sphere {
         
         let id = SHAPE_ID.fetch_add(1,Ordering::SeqCst);
         Sphere {id:id ,orig: geo::Geo::point(0.0,0.0,0.0), radius:1.0, transform:matrix::Matrix::identity()}
+    }
+
+    pub fn set_transform(&mut self, m:matrix::Matrix) {
+        self.transform = m;
     }
 }
 
@@ -374,4 +379,45 @@ fn scale_ray() {
     assert_eq!(r2.dir,geo::Geo::vector(0.0, 3.0, 0.0));
 }
 
+#[test]
+fn sphere_transform_setting() {
 
+    let mut s = Sphere::unit();
+    let t = matrix::Matrix::translate(2.0, 3.0, 4.0);
+    s.set_transform(t.clone());
+
+    assert_eq!(s.transform,t);
+}
+
+#[test]
+fn scaled_intersection() {
+
+    let r = Ray::new(
+        geo::Geo::point( 0.0, 0.0,-5.0),
+        geo::Geo::vector(0.0, 0.0, 1.0));
+
+    let mut s = Sphere::unit();
+    s.set_transform(matrix::Matrix::scale(2.0, 2.0, 2.0));
+
+    let xs = r.intersect(s);
+    
+    assert_eq!(xs.len(),2);
+    assert_eq!(xs[0].t,3.0);
+    assert_eq!(xs[1].t,7.0);
+
+}
+
+#[test]
+fn translated_intersection() {
+
+    let r = Ray::new(
+        geo::Geo::point( 0.0, 0.0,-5.0),
+        geo::Geo::vector(0.0, 0.0, 1.0));
+
+    let mut s = Sphere::unit();
+    s.set_transform(matrix::Matrix::translate(5.0, 0.0, 0.0));
+
+    let xs = r.intersect(s);
+    
+    assert_eq!(xs.len(),0);
+}
