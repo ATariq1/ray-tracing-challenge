@@ -21,32 +21,9 @@ fn main() {
     let mut shape = ray::Sphere::unit();
     shape.set_transform(matrix::Matrix::shear(-1.0, 0.0, 0.0, 0.0, 0.0, 0.5));
 
-    println!("starting render");
+    println!("         STARTING RENDER");
+    println!("==================================");
     let now = Instant::now();
-
-    // OLD SEQUENTIAL WAY
-    /*
-    for y in 0..(canvas_pixels-1) {
-
-        let world_y = half - pixel_size*(y as f64);
-        
-        for x in 0..(canvas_pixels-1) {
-
-            let world_x = -half + pixel_size*(x as f64);
-
-            let position = geo::Geo::point(world_x, world_y, wall_z);
-            let r = ray::Ray::new(ray_origin, position-ray_origin);
-
-            // TODO: change to a reference function
-            let xs = r.intersect(shape.clone());
-            if ray::Isect::hit(xs).id >= 0 {
-                image.write_pixel(x, y, red);
-            }
-
-        }
-
-    }
-    */
 
     // NEW RAYON METHOD
     let mut idx:Vec<(usize,usize)> = Vec::new();
@@ -58,7 +35,7 @@ fn main() {
     }
 
     let ray_vec:Vec<bool> = idx.par_iter()
-        .map(|(y,x)| {
+        .map(|(x,y)| {
 
             let world_y = half - pixel_size*(*y as f64);
             let world_x = -half + pixel_size*(*x as f64);
@@ -72,12 +49,24 @@ fn main() {
         })
         .collect();
 
-        println!("{}",ray_vec.len());
+    println!("{} milliseconds elapsed", now.elapsed().as_millis());
+    println!("{} pixels calculated",ray_vec.len());
 
-    println!("{}", now.elapsed().as_millis());
+    let num_hits:i32 = idx.iter()
+        .zip(ray_vec.iter())
+        .map(|((x,y),hit)| {
 
-    //image.to_ppm("ppm/sphere.ppm");
+            if *hit {
+                image.write_pixel(*x, *y, red);
+                1
+            } else { 0 }
+        })
+        .sum();
 
-    println!("render complete");
+    println!("{} hits detected",num_hits);
+
+    image.to_ppm("ppm/sphere.ppm");
+    println!("==================================");
+    println!("         RENDER COMPLETE");
 
 }
