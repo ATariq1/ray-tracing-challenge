@@ -1,5 +1,6 @@
 use crate::geo;
 use crate::matrix;
+use std::f64::consts::PI;
 use std::sync::atomic::{AtomicI32,Ordering};
 use std::cmp::Ordering as Order;
 
@@ -76,6 +77,19 @@ impl Sphere {
     pub fn set_transform(&mut self, m:matrix::Matrix) {
         self.transform = m;
     }
+
+
+    pub fn normal_at(&self, wld_point:geo::Geo) -> geo::Geo {
+
+        let obj_point  = self.transform.inverse()*wld_point;
+        let obj_normal = obj_point - geo::Geo::point(0.0, 0.0, 0.0);
+        let mut wld_normal = self.transform.inverse().transpose()*obj_normal;
+        wld_normal.w = 0.0;
+
+        return wld_normal.norm();
+
+    }
+
 }
 
 impl PartialEq for Sphere {
@@ -420,4 +434,55 @@ fn translated_intersection() {
     let xs = r.intersect(s);
     
     assert_eq!(xs.len(),0);
+}
+
+#[test]
+fn normal_x_axis() {
+    let s = Sphere::unit();
+    assert_eq!(s.normal_at(geo::Geo::point(1.0, 0.0, 0.0)),geo::Geo::vector(1.0, 0.0, 0.0));
+}
+
+#[test]
+fn normal_y_axis() {
+    let s = Sphere::unit();
+    assert_eq!(s.normal_at(geo::Geo::point(0.0, 1.0, 0.0)),geo::Geo::vector(0.0, 1.0, 0.0));
+}
+
+#[test]
+fn normal_z_axis() {
+    let s = Sphere::unit();
+    assert_eq!(s.normal_at(geo::Geo::point(0.0, 0.0, 1.0)),geo::Geo::vector(0.0, 0.0, 1.0));
+}
+
+#[test]
+fn normal_non_axial() {
+    let s = Sphere::unit();
+    assert_eq!(s.normal_at(geo::Geo::point((3.0 as f64).sqrt()/3.0,(3.0 as f64).sqrt()/3.0,(3.0 as f64).sqrt()/3.0)),
+                          geo::Geo::vector((3.0 as f64).sqrt()/3.0,(3.0 as f64).sqrt()/3.0,(3.0 as f64).sqrt()/3.0));
+}
+
+#[test]
+fn normalized_normal() {
+    let s = Sphere::unit();
+    let n = s.normal_at(geo::Geo::point((3.0 as f64).sqrt()/3.0,(3.0 as f64).sqrt()/3.0,(3.0 as f64).sqrt()/3.0));
+    assert_eq!(n.norm(),geo::Geo::vector((3.0 as f64).sqrt()/3.0,(3.0 as f64).sqrt()/3.0,(3.0 as f64).sqrt()/3.0));
+}
+
+#[test]
+fn translated_normal() {
+    let mut s = Sphere::unit();
+    s.set_transform(matrix::Matrix::translate(0.0, 1.0, 0.0));
+    let n = s.normal_at(geo::Geo::point(0.0, 1.70711, -0.70711));
+    assert_eq!(n,geo::Geo::vector(0.0, 0.70711, -0.70711));
+}
+
+#[test]
+fn scaled_rotated_normal() {
+
+    let mut s = Sphere::unit();
+    let m = matrix::Matrix::scale(1.0, 0.5, 1.0) * matrix::Matrix::rotate_z(PI/5.0);
+    s.set_transform(m);
+    let n = s.normal_at(geo::Geo::point(0.0, 1.0/(2.0 as f64).sqrt(), -1.0/(2.0 as f64).sqrt()));
+    assert_eq!(n,geo::Geo::vector(0.0, 0.97014, -0.24254));
+
 }

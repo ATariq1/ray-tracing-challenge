@@ -67,6 +67,11 @@ impl Geo {
                     self.z*other.x - self.x*other.z,
                     self.x*other.y - self.y*other.x)
     }
+
+    pub fn reflect(&self, normal:Self) -> Geo {
+
+        return *self - (normal*2.0)*self.dot(normal);
+    }
 }
 
 impl ops::Add for Geo {
