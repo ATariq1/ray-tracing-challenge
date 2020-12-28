@@ -71,6 +71,7 @@ impl Geo {
     pub fn reflect(&self, normal:Self) -> Geo {
 
         return *self - (normal*2.0)*self.dot(normal);
+
     }
 }
 
