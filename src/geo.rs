@@ -347,4 +347,21 @@ mod tests {
     }
 }
 
+#[test]
+fn reflect_45() {
+    let v = Geo::vector(1.0, -1.0, 0.0);
+    let n = Geo::vector(0.0,1.0,0.0);
+
+    let r = v.reflect(n);
+    assert_eq!(r,Geo::vector(1.0, 1.0, 0.0));
+}
+
+#[test]
+fn reflect_slant() {
+    let v = Geo::vector(0.0, -1.0, 0.0);
+    let n = Geo::vector(1.0/(2.0f64).sqrt(),1.0/(2.0f64).sqrt(),0.0);
+
+    let r = v.reflect(n);
+    assert_eq!(r,Geo::vector(1.0, 0.0, 0.0));
+}
 
