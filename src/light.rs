@@ -7,8 +7,8 @@ pub struct Light {
 }
 
 impl Light {
-   pub fn point(i:color::Color, p:geo::Geo) -> Light {
-       Light {intensity:i, position:p}
+   pub fn point(intensity:color::Color, position:geo::Geo) -> Light {
+       Light {intensity:intensity, position:position}
    }
 }
 

@@ -1,5 +1,6 @@
 use crate::geo;
 use crate::matrix;
+use crate::material;
 use std::f64::consts::PI;
 use std::sync::atomic::{AtomicI32,Ordering};
 use std::cmp::Ordering as Order;
@@ -62,7 +63,8 @@ pub struct Sphere {
         id:i32,
     pub orig:geo::Geo,
     pub radius: f64,
-    pub transform: matrix::Matrix
+    pub transform: matrix::Matrix,
+    pub material: material::Material,
 }
 
 
@@ -71,7 +73,11 @@ impl Sphere {
     pub fn unit() -> Sphere {
         
         let id = SHAPE_ID.fetch_add(1,Ordering::SeqCst);
-        Sphere {id:id ,orig: geo::Geo::point(0.0,0.0,0.0), radius:1.0, transform:matrix::Matrix::identity()}
+        Sphere {id:id, 
+                orig: geo::Geo::point(0.0,0.0,0.0),
+                radius:1.0, transform:matrix::Matrix::identity(), 
+                material:material::Material::default()
+            }
     }
 
     pub fn set_transform(&mut self, m:matrix::Matrix) {

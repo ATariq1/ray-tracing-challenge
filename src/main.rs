@@ -4,6 +4,7 @@ mod light;
 mod color;
 mod canvas;
 mod matrix;
+mod material;
 mod projectile;
 use rayon::prelude::*;
 use std::time::{Instant};
