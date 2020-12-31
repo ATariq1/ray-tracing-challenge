@@ -13,18 +13,17 @@ fn main() {
 
     let ray_origin    = geo::Geo::point(0.0, 0.0, -5.0);
     let wall_z        = 10.0;
-    let wall_size     = 20.0;
-    let canvas_pixels = 1080;
+    let wall_size     = 10.0;
+    let canvas_pixels = 720;
     let pixel_size    = wall_size/(canvas_pixels as f64);
     let half          = wall_size/2.0; 
 
     let mut image = canvas::Canvas::new(canvas_pixels,canvas_pixels);
-    let red       = color::Color::new(1.0, 0.0, 0.0);
     let mut shape = ray::Sphere::unit();
-    shape.set_transform(matrix::Matrix::shear(-1.0, 0.0, 0.0, 0.0, 0.0, 0.5));
+    //shape.set_transform(matrix::Matrix::shear(-1.0, 0.0, 0.0, 0.0, 0.0, 0.5));
     shape.material.color = color::Color::new(0.3, 0.3, 1.0);
 
-    let light_position = geo::Geo::point(-10.0, -10.0, -10.0);
+    let light_position = geo::Geo::point(-10.0, 10.0, -10.0);
     let light_color    = color::Color::new(1.0, 1.0, 1.0);
     let light          = light::Light::point(light_color, light_position);
 
@@ -51,7 +50,7 @@ fn main() {
 
             let position = geo::Geo::point(world_x, world_y, wall_z);
             let r = ray::Ray::new(ray_origin, position-ray_origin);
-            let eye = -r.dir;
+            let eye = -(r.dir).norm();
 
             let xs  = r.intersect(shape.clone());
             let hit = ray::Isect::hit(xs);
