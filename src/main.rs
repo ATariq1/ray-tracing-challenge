@@ -22,6 +22,13 @@ fn main() {
     let red       = color::Color::new(1.0, 0.0, 0.0);
     let mut shape = ray::Sphere::unit();
     shape.set_transform(matrix::Matrix::shear(-1.0, 0.0, 0.0, 0.0, 0.0, 0.5));
+    shape.material.color = color::Color::new(0.3, 0.3, 1.0);
+
+    let light_position = geo::Geo::point(-10.0, -10.0, -10.0);
+    let light_color    = color::Color::new(1.0, 1.0, 1.0);
+    let light          = light::Light::point(light_color, light_position);
+
+    
 
     println!("         STARTING RENDER");
     println!("==================================");
@@ -36,7 +43,7 @@ fn main() {
         }
     }
 
-    let ray_vec:Vec<bool> = idx.par_iter()
+    let ray_vec:Vec<color::Color> = idx.par_iter()
         .map(|(x,y)| {
 
             let world_y = half - pixel_size*(*y as f64);
@@ -44,10 +51,19 @@ fn main() {
 
             let position = geo::Geo::point(world_x, world_y, wall_z);
             let r = ray::Ray::new(ray_origin, position-ray_origin);
+            let eye = -r.dir;
 
-            // TODO: change to a reference function instead of cloning
-            let xs = r.intersect(shape.clone());
-            ray::Isect::hit(xs).id >= 0 
+            let xs  = r.intersect(shape.clone());
+            let hit = ray::Isect::hit(xs);
+            if hit.id >= 0 {
+
+                let point = r.position(hit.t);
+                let norm  = shape.normal_at(point);
+
+                return light::lighting(shape.material,light,point,eye,norm);
+            } else {
+                return color::Color::new(0.0, 0.0, 0.0);
+            }
         })
         .collect();
 
@@ -56,12 +72,10 @@ fn main() {
 
     let num_hits:i32 = idx.iter()
         .zip(ray_vec.iter())
-        .map(|((x,y),hit)| {
+        .map(|((x,y),color)| {
 
-            if *hit {
-                image.write_pixel(*x, *y, red);
+                image.write_pixel(*x, *y, *color);
                 1
-            } else { 0 }
         })
         .sum();
 
